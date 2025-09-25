@@ -1,6 +1,8 @@
 # Chess
 #### Single executable chess game with decent AI
 
+### [Download chess.exe (124KB)](https://github.com/mfbulut/Chess/releases/latest/download/chess.exe)
+
 ### Controls
 - R - Reset
 - Z - Undo
