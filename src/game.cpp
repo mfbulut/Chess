@@ -52,7 +52,7 @@ void draw_piece(float x, float y, float piece, float color) {
 
 void game_update() {
     if (SCL_boardGameOver(game.board)) {
-
+        // Todo win and lose inducators
     } else {
         if (SCL_boardWhitesTurn(game.board)) {
             if (key_pressed('H')) {
@@ -177,6 +177,19 @@ void game_update() {
         draw({ 0, 0 }, { 89, 89 }, { (float)(move_x * 90), 630 - (float)(move_y * 90) }, {32, 196, 32, 140});
     }
     SCL_SQUARE_SET_ITERATE_END
+
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            char piece = game.board[x + y * 8];
+            uint8_t square = x + y * 8;
+
+            if (piece == 'K' && SCL_boardSquareAttacked(game.board, square, 0)) {
+                draw({ 0, 0 }, { 89, 89 }, { (float)(x * 90), 630 - (float)(y * 90) }, {216, 0, 0, 180});
+            } else if (piece == 'k' && SCL_boardSquareAttacked(game.board, square, 1)) {
+                draw({ 0, 0 }, { 89, 89 }, { (float)(x * 90), 630 - (float)(y * 90) }, {216, 0, 0, 180});
+            }
+        }
+    }
 
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
