@@ -2,12 +2,12 @@ static float sound_time = 0.0f;
 static int sound_active = 0;
 static float audio_time = 0.0f;
 
-void trigger_sound() {
+void trigger_sfx() {
     sound_time = 0.0f;
     sound_active = 1;
 }
 
-float generate_sound(float time) {
+float generate_sfx(float time) {
     if (time > 0.12f) return 0.0f;
 
     float env = expf(-time * 25.0f) * 0.5;
@@ -28,7 +28,7 @@ void game_audio(float* buffer, int frame_count) {
         float amplitude = 0.0f;
 
         if (sound_active) {
-            amplitude += generate_sound(sound_time);
+            amplitude += generate_sfx(sound_time);
             sound_time += samplePeriod;
 
             if (sound_time > 0.08f) {

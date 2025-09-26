@@ -159,6 +159,19 @@ float total_time() {
     return time_state.total_time;
 }
 
+float dist2(vec2 a, vec2 b) {
+    return a.x * b.x + a.y * b.y;
+}
+
+vec2 lerp_vec2(vec2 a, vec2 b, float t) {
+    return (vec2){ a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t };
+}
+
+float ease_out_cubic(float t) {
+    float f = t - 1.0f;
+    return f * f * f + 1.0f;
+}
+
 #define SAMPLE_RATE 48000
 
 #include "game.cpp"
