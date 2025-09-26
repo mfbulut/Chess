@@ -357,24 +357,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    ID3DBlob* errorBlob;
     ID3DBlob* vertexshaderCSO;
 
     HRESULT hr = D3DCompile(
-        shader_hlsl, strlen(shader_hlsl),        // source & length
-        nullptr, nullptr, nullptr,               // optional macros, includes, include handler
-        "vs", "vs_5_0",                          // entry point + target profile
-        0, 0,                                    // compile flags
-        &vertexshaderCSO, &errorBlob
+        shader_hlsl, strlen(shader_hlsl),
+        nullptr, nullptr, nullptr,
+        "vs", "vs_5_0",
+        0, 0,
+        &vertexshaderCSO, 0
     );
 
-    if (FAILED(hr)) {
-        if (errorBlob) {
-            OutputDebugStringA((char*)errorBlob->GetBufferPointer());
-            errorBlob->Release();
-        }
-        return 0;
-    }
 
     ID3D11VertexShader* vertexshader;
 
@@ -389,16 +381,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         nullptr, nullptr, nullptr,
         "ps", "ps_5_0",
         0, 0,
-        &pixelshaderCSO, &errorBlob
+        &pixelshaderCSO, 0
     );
 
-    if (FAILED(hr)) {
-        if (errorBlob) {
-            OutputDebugStringA((char*)errorBlob->GetBufferPointer());
-            errorBlob->Release();
-        }
-        return 0;
-    }
 
     ID3D11PixelShader* pixelshader;
 
