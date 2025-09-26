@@ -1,6 +1,6 @@
 static float sound_time = 0.0f;
-static int sound_active = 0;
 static float audio_time = 0.0f;
+static int sound_active = 0;
 
 void trigger_sfx() {
     sound_time = 0.0f;

@@ -8,9 +8,7 @@
 #include <dwmapi.h>
 #include <math.h>
 
-#define QOI_IMPLEMENTATION
-#include "qoi.h"
-
+#include "tpng.h"
 #include "spritesheet.h"
 
 const char* shader_hlsl = "cbuffer constants : register(b0)\n"
@@ -264,8 +262,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     time_state.delta_time = 0.0f;
     time_state.total_time = 0.0f;
 
-    qoi_desc desc;
-    void *spritesheetdata = qoi_decode(spritesheet, 55792, &desc, 4);
+    unsigned int atlas_width;
+    unsigned int atlas_height;
+    unsigned char* spritesheet_rgba = tpng_get_rgba(
+        spritesheet,
+        sizeof(spritesheet),
+        &atlas_width,
+        &atlas_height
+    );
 
     WNDCLASSA wndclass = { 0, WndProc, 0, 0, hInstance, LoadIconA(hInstance, MAKEINTRESOURCE(101)), LoadCursor(NULL, IDC_ARROW), 0, 0, TITLE };
 
@@ -314,7 +318,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    float constants[4] = { 2.0f / swapchaindesc.BufferDesc.Width, -2.0f / swapchaindesc.BufferDesc.Height, 1.0f / desc.width, 1.0f / desc.height };
+    float constants[4] = { 2.0f / swapchaindesc.BufferDesc.Width, -2.0f / swapchaindesc.BufferDesc.Height, 1.0f / atlas_width, 1.0f / atlas_height };
 
     D3D11_BUFFER_DESC constantbufferdesc = {};
     constantbufferdesc.ByteWidth = sizeof(constants) + 0xf & 0xfffffff0;
@@ -409,8 +413,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     D3D11_TEXTURE2D_DESC spritesheetdesc = {};
-    spritesheetdesc.Width            = desc.width;
-    spritesheetdesc.Height           = desc.height;
+    spritesheetdesc.Width            = atlas_width;
+    spritesheetdesc.Height           = atlas_height;
     spritesheetdesc.MipLevels        = 1;
     spritesheetdesc.ArraySize        = 1;
     spritesheetdesc.Format           = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -419,8 +423,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     spritesheetdesc.BindFlags        = D3D11_BIND_SHADER_RESOURCE;
 
     D3D11_SUBRESOURCE_DATA spritesheetSRD = {};
-    spritesheetSRD.pSysMem     = spritesheetdata;
-    spritesheetSRD.SysMemPitch = desc.width * sizeof(UINT);
+    spritesheetSRD.pSysMem     = spritesheet_rgba;
+    spritesheetSRD.SysMemPitch = atlas_width * sizeof(UINT);
 
     ID3D11Texture2D* spritesheet;
 
